@@ -1,0 +1,13 @@
+Sandbox Salesforce
+
+https://platform-customization-6140.my.salesforce.com
+ 
+login: aglwill-jqrn@force.com
+senha: padrão
+
+Sandbox Salesforce Dev
+
+https://casestage-dev-ed.develop.my.salesforce.com
+
+login: atwill@case.stage
+senha: padrão 

@@ -1,0 +1,24 @@
+trigger LeadTrigger on Lead (after insert) {
+    for (Lead lead : Trigger.new) {
+        // Chame a API BrasilAPI para verificar o status do CNPJ
+        Http http = new Http();
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint('https://brasilapi.com.br/api/cnpj/v1/' + lead.CNPJ__c);
+        request.setMethod('GET');
+        HttpResponse response = http.send(request);
+        
+        // Parse a resposta
+        Map<String, Object> results = (Map<String, Object>) JSON.deserializeUntyped(response.getBody());
+        
+        // Verifique se o CNPJ está ativo
+        if (results.get('situacao') == 'ATIVA') {
+            // Preencha os campos Razão Social e Nome Fantasia
+            lead.Razao_Social__c = (String) results.get('razao_social');
+            lead.Nome_Fantasia__c = (String) results.get('nome_fantasia');
+            update lead;
+        } else {
+            // Retorne um erro se o CNPJ não estiver ativo
+            lead.addError('O CNPJ fornecido não está ativo.');
+        }
+    }
+}
